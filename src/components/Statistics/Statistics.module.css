@@ -1,0 +1,7 @@
+.result {
+  margin-top: 0;
+  font-size: 16px;
+}
+.result:not(:last-child) {
+  margin-bottom: 5px;
+}
