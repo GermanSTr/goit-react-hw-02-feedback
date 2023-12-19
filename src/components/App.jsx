@@ -10,30 +10,16 @@ export class App extends Component {
     neutral: 0,
     bad: 0,
   };
-  // handleIncrement = evt => {
-  //   const text = evt.currentTarget.textContent.toLowerCase();
-  //   const values = Object.keys(this.state);
-  //   values.forEach(value => {
-  //     text === value &&
-  //       this.setState(prevState => ({
-  //         value: prevState.value + 1,
-  //       }));
-  //   });
-  // };
 
-  handleIncrement = evt => {
-    const text = evt.currentTarget.textContent.toLowerCase();
-    this.setState(prevState => {
-      const updatedState = { ...prevState };
-      if (updatedState.hasOwnProperty(text)) {
-        updatedState[text] += 1;
-      }
-      return updatedState;
-    });
+  handleIncrement = option => {
+    this.setState(prevState => ({
+      [option]: prevState[option] + 1,
+    }));
   };
 
   countTotalFeedback = () => {
-    return this.state.good + this.state.neutral + this.state.bad;
+    const values = Object.values(this.state);
+    return values.reduce((total, value) => total + value, 0);
   };
 
   countPositiveFeedbackPercentage = () => {
@@ -43,23 +29,27 @@ export class App extends Component {
   };
 
   render() {
+    const { good, bad, neutral } = this.state;
+    const total = this.countTotalFeedback();
+    const positive = this.countPositiveFeedbackPercentage();
+
     return (
       <div>
         <Section title="Please leave feedback">
           <FeedbackOptions
             onLeaveFeedback={this.handleIncrement}
-            options={this.state}
+            options={Object.keys(this.state)}
           />
         </Section>
 
         <Section title="Statistics">
-          {this.state.good || this.state.neutral || this.state.bad ? (
+          {total ? (
             <Statistics
-              good={this.state.good}
-              neutral={this.state.neutral}
-              bad={this.state.bad}
-              total={this.countTotalFeedback()}
-              positivePercentage={this.countPositiveFeedbackPercentage()}
+              good={good}
+              neutral={neutral}
+              bad={bad}
+              total={total}
+              positivePercentage={positive}
             />
           ) : (
             <Notification message="There is no feedback" />
